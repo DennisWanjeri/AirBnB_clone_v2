@@ -1,0 +1,6 @@
+-- prepares a MySQL server for the project
+-- creates a MySQL server with:
+-- Database hbnb_dev_db
+-- User hbnb_dev with password hbnb_dev_pwd
+--   Grants all privileges for hbnb_dev on hbnb_dev_db.
+--   Grants SELECT privilege for hbnb_dev on performance_schema.
