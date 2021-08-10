@@ -117,39 +117,33 @@ class HBNBCommand(cmd.Cmd):
         """Usage: create <class> <key 1>=<value 2> <key 2>=<value 2> ...
         Create a new class instance with given keys/values and print its id.
         """
-        # handling when args is null, raise syntax error
-        try:
-            if not args:
-                raise SyntaxError()
-            # split the command into individual key, value statements
-            my_args = args.split(" ")
-
-            kwargs = {}
-            for i in range(1, len(my_args)):
-                key, value = tuple(my_args[i].split("="))
-                # a value contains quotes, also replacing '_' with ' '
-                if value[0] == '"':
-                    value = value.strip('"').replace("_", " ")
-                else:
-                    try:
-                        value = eval(value)
-                    except (SyntaxError, NameError):
-                        continue
-                kwargs[key] = value
-
-            # an empty dictionary
-            if kwargs == {}:
-                obj = eval(my_args[0])()
-            else:
-                obj = eval(my_args[0])(**kwargs)
-                storage.new(obj)
-            print(obj.id)
-            obj.save()
-
-        except SyntaxError:
+        args_list = args.split()
+        if not args:
             print("** class name missing **")
-        except NameError:
+            return
+        if args_list[0] not in HBNBCommand.classes:
             print("** class doesn't exist **")
+            return
+        new_instance = HBNBCommand.classes[args_list[0]]()
+        for i in range(1, len(args_list)):
+            # separate key and value into a tuple
+            attrs = args_list[i].partition("=")
+            key = attrs[0]
+            value = attrs[2]
+            # parsing values
+            if '\"' in value:
+                value = value[1:-1]
+                value = value.replace("_", " ")
+            elif '.' in value:
+                value = float(value)
+            else:
+                value = int(value)
+            # check presence of attribute in instance
+            if hasattr(new_instance, key):
+                setattr(new_instance, key, value)
+
+        new_instance.save()
+        print(new_instance.id)
 
     def help_create(self):
         """ Help information for the create method """
@@ -227,17 +221,16 @@ class HBNBCommand(cmd.Cmd):
         print_list = []
 
         if args:
-            args = args.split(' ')[0]  # remove possible trailing args
+            args = args.split(' ')[0]
             if args not in HBNBCommand.classes:
                 print("** class doesn't exist **")
                 return
-            for k, v in storage._FileStorage__objects.items():
+            for k, v in storage.all(args).items():
                 if k.split('.')[0] == args:
                     print_list.append(str(v))
         else:
-            for k, v in storage._FileStorage__objects.items():
+            for k, v in storage.all().items():
                 print_list.append(str(v))
-
         print(print_list)
 
     def help_all(self):
