@@ -21,7 +21,6 @@ def do_pack():
                                                               dt.hour,
                                                               dt.minute,
                                                               dt.second)
-        # create vetsions folder if it doesnt exist
     if os.path.isdir("versions") is False:
         if local("mkdir -p versions").failed is True:
             return None
@@ -29,6 +28,7 @@ def do_pack():
     if local("tar -cvzf {} web_static".format(file_name)).failed is True:
         return None
     return file_name
+
 
 def do_deploy(archive_path):
     """distributes an archive to our web_servers"""
@@ -71,6 +71,7 @@ def do_deploy(archive_path):
         return False
 
     return True
+
 
 def deploy():
     """create and distribute archive to web server"""
