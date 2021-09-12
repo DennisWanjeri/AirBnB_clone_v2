@@ -14,12 +14,14 @@ def hello_hbnb():
     """
     return "Hello HBNB!"
 
+
 @app.route("/hbnb", strict_slashes=False)
 def hbnb_display():
     """
     displays "HBNB"
     """
     return "HBNB"
+
 
 @app.route("/c/<text>", strict_slashes=False)
 def cisfun(text):
@@ -28,6 +30,7 @@ def cisfun(text):
     """
     text = text.replace("_", " ")
     return "C {}".format(text)
+
 
 @app.route("/python", strict_slashes=False)
 @app.route("/python/<text>", strict_slashes=False)
